@@ -1,70 +1,93 @@
-# Getting Started with Create React App
+# Project
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project consists of a **frontend** built with React and a **backend** built with FastAPI. The frontend allows users to create and manage nodes in a pipeline, while the backend processes this data and checks whether the pipeline is a Directed Acyclic Graph (DAG).
 
-## Available Scripts
+## Frontend
 
-In the project directory, you can run:
+### Description
 
-### `npm start`
+The frontend is a React application that provides a user interface for creating nodes and pipelines. Users can interact with different types of nodes and submit their pipelines to the backend for processing.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Features
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- **Node Types**: Supports different node types like TextNode, InputNode, and OutputNode.
+- **Dynamic Handles**: Nodes dynamically adjust their input/output handles based on their content.
+- **Pipeline Submission**: Users can submit their pipelines to the backend for processing.
 
-### `npm test`
+### Installation
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. **Clone the repository:**
 
-### `npm run build`
+   ```bash
+   git clone <repository-url>
+   ```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+2. **Navigate to the frontend directory:**
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+   ```bash
+   cd <repository-folder>/frontend
+   ```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+3. **Install dependencies:**
 
-### `npm run eject`
+   ```bash
+   npm install
+   ```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Running the Frontend
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+1. **Start the development server:**
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+   ```bash
+   npm start
+   ```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+2. **Access the application:**
 
-## Learn More
+   Open your browser and navigate to `http://localhost:3000`.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Usage
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+1. **Create Nodes:** Use the UI to add and configure different types of nodes.
+2. **Connect Nodes:** Drag connections between nodes to build your pipeline.
+3. **Submit Pipeline:** Click the "Submit" button to send the pipeline data to the backend.
 
-### Code Splitting
+### Example
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+When a pipeline is submitted, the frontend sends a request to the backend with the node and edge data. The response includes the number of nodes, edges, and whether the pipeline is a DAG.
 
-### Analyzing the Bundle Size
+#### Code Example
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+Here is an example of how you can use the `SubmitButton` component:
 
-### Making a Progressive Web App
+```jsx
+import React from "react";
+import { SubmitButton } from "./components/SubmitButton";
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+const handleSubmit = async () => {
+  // Prepare your data here
+  const pipelineData = { nodes: [], edges: [] };
 
-### Advanced Configuration
+  try {
+    const response = await fetch("http://localhost:8000/pipelines/parse", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(pipelineData),
+    });
+    const result = await response.json();
+    alert(
+      `Nodes: ${result.num_nodes}, Edges: ${result.num_edges}, Is DAG: ${result.is_dag}`
+    );
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+const App = () => (
+  <div>
+    <SubmitButton onClick={handleSubmit} />
+  </div>
+);
 
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+export default App;
+```

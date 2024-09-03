@@ -1,0 +1,11 @@
+.pipelineContainer {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  
+  .reactFlowWrapper {
+    flex: 1;
+    background-color: #f0f0f0;
+  }
+  
